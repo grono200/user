@@ -1,0 +1,40 @@
+Code Review pliku users.php
+
+linie kodu
+linia 1 - powinno być <?php
+linia 3, 21, 41 - użycie modyfikatorów dostępu wskazuje że mamy do czynienia z ciałem klasy. Generalnie struktura kodu wskazuje na Laravel, wobec tego powinna to być np klasa controlera Laravel np
+
+namespace App\Http\Controllers; 
+use App\Http\Controllers\Controller;
+
+class UserController extends Controller{
+   ...
+   }
+
+linia 8, 27,  brak wczytania obiektu DB
+use Illuminate\Support\Facades\DB;
+
+linia 15, 18, 34, 38 - brak wczytania obiektu Redirect
+use Illuminate\Support\Facades\Redirect;
+
+linia 46 - brak wczytania obiektu Mail
+use Illuminate\Support\Facades\Mail;
+
+linia 55 - powinna być pusta
+
+linia 7, 26 - walidacja odbywa się w warunku struktury 'if' i powtarza się, rozważyłbym wyrzucenie tego do osobnej metody prywatnej np 
+private function validateUser($user){
+    return ( $user['name'] && $user['login'] && $user['email'] && $user['password'] && strlen($user['name']) >= 10 );
+}
+
+linia 12, 31 - kodowanie md5 obecnie uważane jest za słabe, ze względów bezpieczeństwa należy rozważyć użycie silniejszego algorytmu jeżeli to możliwe ( nie będzie problemu z zapisem w db ).
+Można też użyć funkcji haszującej, która sama generuje sól
+$password = password_hash($password, PASSWORD_DEFAULT);
+
+
+Generalnie w pliku brakuje konfiguracji obiektów DB i Mail, ale przy założeniu że pracujemy w środowisku Laravel zakładam że obiekty te są odpowiednio skonfigurowane w plikach konfiguracyjnych Laravela.
+
+
+
+
+ 
